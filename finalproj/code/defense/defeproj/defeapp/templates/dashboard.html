@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Student Performance</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="" rel="stylesheet">
+<style>
+  :root {
+    --primary: #8e44ad;     /* Plum */
+    --secondary: #5d6d7e;   /* Slate Gray */
+    --accent: #f39c12;      /* Saffron */
+    --success: #27ae60;     /* Emerald */
+    --warning: #f39c12;     /* Saffron */
+    --info: #2980b9;        /* Bright Blue */
+    --danger: #c0392b;      /* Crimson */
+    --light: #fdfdfd;
+    --dark: #2c3e50;
+  }
+
+  body {
+    background: #f4f4f4;
+    font-family: 'Nunito', sans-serif;
+    color: var(--dark);
+    margin: 0;
+    padding: 0;
+  }
+
+  .page-wrapper {
+    padding: 2rem 1rem;
+  }
+
+  .dashboard-container {
+    background-color: var(--light);
+    border: 1px solid #e0e0e0;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  }
+
+  .dashboard-header {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 1rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  .dashboard-subtitle {
+    font-size: 1rem;
+    color: var(--secondary);
+  }
+
+  .stats-container {
+
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: var(--light);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #dcdcdc;
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    background: #fafafa;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  }
+
+  .stat-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+  }
+
+  .table-container {
+    background: var(--light);
+    border-radius: 0.75rem;
+    overflow-x: auto;
+    border: 1px solid #e0e0e0;
+    padding: 1rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  thead {
+    background-color: var(--primary);
+    color: white;
+  }
+
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+  }
+
+  tbody tr:hover {
+    background-color: #f9f9f9;
+  }
+
+  .badge {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  .badge-success {
+    background: #d4efdf;
+    color: var(--success);
+  }
+
+  .badge-warning {
+    background: #fdebd0;
+    color: var(--warning);
+  }
+
+  .badge-danger {
+    background: #f5b7b1;
+    color: var(--danger);
+  }
+
+  .btn-view {
+    background-color: var(--primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-view:hover {
+    background-color: #732d91;
+  }
+
+  .search-box {
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid #ccc;
+    border-radius: 2rem;
+    font-size: 1rem;
+  }
+
+  .search-box .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+  }
+
+  .search-box input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+    outline: none;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .pagination .page-item .page-link {
+    padding: 0.5rem 0.75rem;
+    margin: 0 4px;
+    border: 1px solid var(--accent);
+    border-radius: 0.4rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: var(--accent);
+    color: white;
+  }
+
+  .navbar-custom {
+    background-color: var(--light);
+    border-bottom: 1px solid #ddd;
+    padding: 1rem 2rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .navbar-brand span {
+    color: var(--accent);
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--danger);
+    color: white;
+    font-size: 0.65rem;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .dashboard-container {
+      padding: 1.25rem;
+    }
+
+    .stats-container {
+      grid-template-columns: 1fr;
+    }
+
+    .table-container {
+      padding: 0.5rem;
+    }
+  }
+
+  .form-switch .form-check-input {
+    width: 3em;
+    height: 1.5em;
+    margin-top: 0.25em;
+    border-radius: 1em;
+    background-color: #ccc;
+    border: none;
+  }
+
+  .form-switch .form-check-input:checked {
+    background-color: var(--primary);
+  }
+
+  .fade-in {
+    animation: fadeInAlt 0.6s ease-in;
+  }
+
+  @keyframes fadeInAlt {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><span></span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#"><i class="bi bi-house-door"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-people"></i> Students</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-bar-chart"></i> Analytics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-gear"></i> Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'predict_home' %}"><i class="bi bi-graph-up"></i> Predict Form</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a class="dropdown-toggle d-flex align-items-center" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="d-none d-sm-block">Admin</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'sign_in' %}"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid page-wrapper">
+        <div class="container">
+            <!-- Dashboard Header -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <h1 class="dashboard-title">Student Performance Dashboard</h1>
+                    <p class="dashboard-subtitle"></p>
+                </div>
+                <div class="col-md-4 d-flex justify-content-md-end align-items-center">
+                    <div class="form-check form-switch me-3">
+
+
+                    </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row stats-container">
+                <div class="col-md-3 col-sm-6 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-value">124</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">Pass Rate</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="bi bi-clock"></i>
+                        </div>
+                        <div class="stat-value">4.2</div>
+                        <div class="stat-label">Avg. Study Hours</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <div class="stat-value">92%</div>
+                        <div class="stat-label">Attendance Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="search-box">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" class="form-control" placeholder="Search students...">
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex justify-content-md-end gap-2">
+                    <select class="form-select w-auto">
+                        <option selected>Filter by Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                    <select class="form-select w-auto">
+                        <option selected>Sort by</option>
+                        <option value="age">Age</option>
+                        <option value="hours">Study Hours</option>
+                        <option value="attendance">Attendance</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-container" data-aos="fade-up">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-person me-2"></i>Age</th>
+                            <th><i class="bi bi-gender-ambiguous me-2"></i>Gender</th>
+                            <th><i class="bi bi-book me-2"></i>Study Hours</th>
+                            <th><i class="bi bi-calendar-check me-2"></i>Attendance (%)</th>
+                            <th><i class="bi bi-graph-up me-2"></i>Prediction</th>
+                            <th><i class="bi bi-gear me-2"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prediction in predictions %}
+                        <tr>
+                            <td>{{ prediction.age }}</td>
+                            <td>{{ prediction.gender }}</td>
+                            <td>{{ prediction.study_hours_per_day }}</td>
+                            <td>
+                                {% if prediction.attendance_percentage >= 90 %}
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ prediction.attendance_percentage }}%"></div>
+                                </div>
+                                <small class="mt-1 d-block">{{ prediction.attendance_percentage }}%</small>
+                                {% elif prediction.attendance_percentage >= 75 %}
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ prediction.attendance_percentage }}%"></div>
+                                </div>
+                                <small class="mt-1 d-block">{{ prediction.attendance_percentage }}%</small>
+                                {% else %}
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ prediction.attendance_percentage }}%"></div>
+                                </div>
+                                <small class="mt-1 d-block">{{ prediction.attendance_percentage }}%</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if prediction.prediction_result == 'Pass' %}
+                                <span class="badge badge-success">Pass</span>
+                                {% else %}
+                                <span class="badge badge-danger">Fail</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/prediction/{{ prediction.id }}/details" class="btn btn-view btn-sm">
+                                    <i class="bi bi-eye"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <!-- Sample data for preview -->
+                        <tr>
+                            <td>18</td>
+                            <td>Male</td>
+                            <td>4.5</td>
+                            <td>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 95%"></div>
+                                </div>
+                                <small class="mt-1 d-block">95%</small>
+                            </td>
+                            <td><span class="badge badge-success">Pass</span></td>
+                            <td>
+                                <a href="#" class="btn btn-view btn-sm">
+                                    <i class="bi bi-eye"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>19</td>
+                            <td>Female</td>
+                            <td>3.2</td>
+                            <td>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 78%"></div>
+                                </div>
+                                <small class="mt-1 d-block">78%</small>
+                            </td>
+                            <td><span class="badge badge-warning">At Risk</span></td>
+                            <td>
+                                <a href="#" class="btn btn-view btn-sm">
+                                    <i class="bi bi-eye"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td>Male</td>
+                            <td>2.0</td>
+                            <td>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 65%"></div>
+                                </div>
+                                <small class="mt-1 d-block">65%</small>
+                            </td>
+                            <td><span class="badge badge-danger">Fail</span></td>
+                            <td>
+                                <a href="#" class="btn btn-view btn-sm">
+                                    <i class="bi bi-eye"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                
+                
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div>
+                        <p p>
+                    </div>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination mb-0">
+                            <li class="page-item disabled">
+                                </a>
+                            </li>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white py-4 mt-auto">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div class="col-md-4 d-flex align-items-center">
+                   
+                </div>
+                <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+                    <li class="ms-3"><a class="text-muted" href="#"><i class="bi bi-twitter"></i></a></li>
+                    <li class="ms-3"><a class="text-muted" href="#"><i class="bi bi-instagram"></i></a></li>
+                    <li class="ms-3"><a class="text-muted" href="#"><i class="bi bi-facebook"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS animations
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+            
+            // Dark mode toggle functionality
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+            
+            darkModeSwitch.addEventListener('change', function() {
+                if (this.checked) {
+                    document.body.style.background = 'linear-gradient(135deg, #1a1c23 0%, #242736 100%)';
+                    document.querySelectorAll('.dashboard-container, .navbar-custom, .stat-card, .table-container, footer').forEach(el => {
+                        el.style.backgroundColor = '#242736';
+                        el.style.color = '#e0e0e0';
+                    });
+                    document.querySelectorAll('.dashboard-title, .stat-value, .table th, .table td').forEach(el => {
+                        el.style.color = '#e0e0e0';
+                    });
+                    document.querySelectorAll('.dashboard-subtitle, .stat-label').forEach(el => {
+                        el.style.color = '#a0a0a0';
+                    });
+                    document.querySelectorAll('.table tbody tr:not(:last-child)').forEach(el => {
+                        el.style.borderBottomColor = '#323442';
+                    });
+                } else {
+                    document.body.style.background = 'linear-gradient(135deg, #f6f9fc 0%, #e2ecfd 100%)';
+                    document.querySelectorAll('.dashboard-container, .navbar-custom, .stat-card, .table-container, footer').forEach(el => {
+                        el.style.backgroundColor = 'white';
+                        el.style.color = 'initial';
+                    });
+                    document.querySelectorAll('.dashboard-title, .stat-value, .table th, .table td').forEach(el => {
+                        el.style.color = 'initial';
+                    });
+                    document.querySelectorAll('.dashboard-subtitle, .stat-label').forEach(el => {
+                        el.style.color = '#6c757d';
+                    });
+                    document.querySelectorAll('.table tbody tr:not(:last-child)').forEach(el => {
+                        el.style.borderBottomColor = '#f1f1f1';
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

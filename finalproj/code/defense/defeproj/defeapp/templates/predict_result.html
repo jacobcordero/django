@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .result-container {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .result-header {
+            background: black;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+        
+        .result-body {
+            padding: 2.5rem;
+        }
+        
+        .result-footer {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgb(250, 248, 248);
+            color: rgb(0, 0, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 auto 2rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .score-circle::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+        
+        .result-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: black;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .result-detail {
+            flex-grow: 1;
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.2rem;
+        }
+        
+        .result-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #212529;
+            margin: 0;
+        }
+        
+        .btn-new-prediction {
+            background: black;
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-new-prediction:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f8f9fa;
+            opacity: 0.8;
+            animation: confetti-fall 5s linear infinite;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .result-container {
+                border-radius: 0;
+                max-width: 100%;
+            }
+            
+            .score-circle {
+                width: 150px;
+                height: 150px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="result-container">
+                    <div class="result-header">
+                        <h1><i class="bi bi-award me-2"></i>Prediction Result</h1>
+                        <p class="mb-0">Your academic performance prediction is ready</p>
+                    </div>
+                    
+                    <div class="result-body text-center">
+                        <div class="score-circle">
+                            {{ prediction.prediction_result }}
+                        </div>
+                        
+                        <div class="alert 
+                            {% if prediction.prediction_result >= 85 %}
+                                alert-success
+                            {% elif prediction.prediction_result >= 70 %}
+                                alert-info
+                            {% elif prediction.prediction_result >= 50 %}
+                                alert-warning
+                            {% else %}
+                                alert-danger
+                            {% endif %}
+                        ">
+                            <i class="bi 
+                                {% if prediction.prediction_result >= 85 %}
+                                    bi-emoji-laughing-fill
+                                {% elif prediction.prediction_result >= 70 %}
+                                    bi-emoji-smile-fill
+                                {% elif prediction.prediction_result >= 50 %}
+                                    bi-emoji-neutral-fill
+                                {% else %}
+                                    bi-emoji-frown-fill
+                                {% endif %} 
+                                me-2"></i>
+                            <strong>
+                                {% if prediction.prediction_result >= 85 %}
+                                    Excellent Performance!
+                                {% elif prediction.prediction_result >= 70 %}
+                                    Good Performance
+                                {% elif prediction.prediction_result >= 50 %}
+                                    Average Performance
+                                {% else %}
+                                    Below Average Performance
+                                {% endif %}
+                            </strong>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="result-item">
+                                    <div class="result-icon">
+                                        <i class="bi bi-fingerprint"></i>
+                                    </div>
+                                    <div class="result-detail">
+                                        <div class="result-label">Prediction ID</div>
+                                        <div class="result-value">{{ prediction.id }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="result-item">
+                                    <div class="result-icon">
+                                        <i class="bi bi-calendar-date"></i>
+                                    </div>
+                                    <div class="result-detail">
+                                        <div class="result-label">Created At</div>
+                                        <div class="result-value">{{ prediction.created_at }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">What does this mean?</h5>
+                                </div>
+                                <div class="card-body text-start">
+                                    <p>This prediction represents your expected exam score based on the factors you provided:</p>
+                                    
+                                    <ul class="list-group list-group-flush mb-3">
+                                        {% if prediction.prediction_result >= 85 %}
+                                            <li class="list-group-item text-success"><i class="bi bi-check-circle-fill me-2"></i>You're on track for exceptional results!</li>
+                                            <li class="list-group-item">Your current habits and lifestyle strongly support academic success.</li>
+                                            <li class="list-group-item">Keep maintaining this excellent balance for continued high performance.</li>
+                                        {% elif prediction.prediction_result >= 70 %}
+                                            <li class="list-group-item text-info"><i class="bi bi-check-circle me-2"></i>You're performing well above average.</li>
+                                            <li class="list-group-item">Your study habits are effective, but there's still room for improvement.</li>
+                                            <li class="list-group-item">Consider adjusting certain lifestyle factors to reach excellence.</li>
+                                        {% elif prediction.prediction_result >= 50 %}
+                                            <li class="list-group-item text-warning"><i class="bi bi-exclamation-circle me-2"></i>Your performance is around average.</li>
+                                            <li class="list-group-item">There are several areas where improvements could significantly boost your scores.</li>
+                                            <li class="list-group-item">Focus on increasing study hours and reducing distractions.</li>
+                                        {% else %}
+                                            <li class="list-group-item text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Your predicted performance needs attention.</li>
+                                            <li class="list-group-item">Your current habits may be significantly impacting your academic success.</li>
+                                            <li class="list-group-item">Consider speaking with an academic advisor to develop an improvement plan.</li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-footer">
+                        <a href="/student/" class="">
+                            <i class="bi bi-arrow-repeat me-2"></i>Make Another Prediction
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4 text-muted">
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Celebration effect for high scores -->
+    {% if prediction.prediction_result >= 85 %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create confetti effect for high scores
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDelay = Math.random() * 5 + 's';
+                confetti.style.backgroundColor = ['#ff6b6b', '#48dbfb', '#1dd1a1', '#feca57', '#ff9ff3'][Math.floor(Math.random() * 5)];
+                document.body.appendChild(confetti);
+            }
+        });
+    </script>
+    {% endif %}
+    
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
